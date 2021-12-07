@@ -1,0 +1,28 @@
+name: Gitpod Workspace CI
+
+on:
+  push:
+    branches: [rtapp-mainline]
+    paths:
+      - .gitpod.Dockerile
+  pull_request:
+    branches: [rtapp-mainline]
+    paths:
+      - .gitpod.Dockerile
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Generate build ID for tags
+      run: echo ::set-output name=BUILD_ARTIFACT_ID::$(cat /proc/sys/kernel/random/uuid)
+      id: build-id
+    - run: |
+        docker build \
+          --tag quay.io/recaptime-dev/gitpod-workspace-images-artifacts:${{steps.build-id.outputs.BUILD_ARTIFACT_ID}} \
+          --file .gitpod.Dockerile .
+    - name: Upload image
+      uses: ishworkh/docker-image-artifact-upload@v1
+      with:
+        image: "quay.io/recaptime-dev/gitpod-workspace-images-artifacts:${{steps.build-id.outputs.BUILD_ARTIFACT_ID}}"
