@@ -22,7 +22,7 @@ jobs:
     - run: |
         docker build \
           --tag quay.io/recaptime-dev/gitpod-workspace-images-artifacts:${{steps.build-id.outputs.BUILD_ARTIFACT_ID}} \
-          --file .gitpod.Dockerile .
+          --file .gitpod.Dockerfile .
     - name: Upload image
       uses: ishworkh/docker-image-artifact-upload@v1
       with:
